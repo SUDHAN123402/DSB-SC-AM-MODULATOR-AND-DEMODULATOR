@@ -62,9 +62,56 @@ Note: Keep all the switch faults in off position
 <img width="503" height="479" alt="image" src="https://github.com/user-attachments/assets/9f4fdea5-8f1d-44ae-a75a-8c3737088c0a" />
 
 ## PROGRAM:
+```
+clc;
+clear;
+close();
+am = 8.7;        
+ac = 17.4;        
+fm =238.39;       
+fc = 2216;        
+fs = 21300;       
+t = 0:1/fs:2/fm;
+N = length(t);
+m = am * cos(2 * %pi * fm * t);
+c = ac * cos(2 * %pi * fc * t);
+s = (ac + m) .* cos(2 * %pi * fc * t);
+v = s .* cos(2 * %pi * fc * t); 
+cutoff = 2 * fm;                 
+k = 0:N-1;
+freq = k * (fs / N);
+freq(freq > fs/2) = freq(freq > fs/2) - fs; 
+V = fft(v);                      
+mask = abs(freq) <= cutoff;      
+Vf = V .* mask;                  
+vlp = real(ifft(Vf));            
+demod = 2 * (vlp - ac/2);
+demod = demod - mean(demod) + mean(m); 
+scf(0);
+subplot(4,1,1);
+plot(t, m);
+xtitle("Message m(t)", "Time (s)", "Amplitude");
+subplot(4,1,2);
+plot(t, c);
+xtitle("Carrier c(t)", "Time (s)", "Amplitude");
+subplot(4,1,3);
+plot(t, s);
+xtitle("AM s(t)", "Time (s)", "Amplitude");
+subplot(4,1,4);
+plot(t, demod);
+xtitle("Demodulated (Coherent) signal", "Time (s)", "Amplitude");
+
+```
 
 ## TABULATION:
+![WhatsApp Image 2025-11-16 at 14 31 44_71bdd5c9](https://github.com/user-attachments/assets/c8602681-3e98-4617-a1f4-7abeec320cfe)
+
 
 ## OUTPUT:
+![WhatsApp Image 2025-11-16 at 14 32 30_4eec07d9](https://github.com/user-attachments/assets/a79ad144-13cd-4749-8b80-26ee91fad1ef)
+
 
 ## RESULT:
+Thus the DSB-SC-AM Modulation and Demodulation is generated.
+
+
